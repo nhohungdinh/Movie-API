@@ -5,34 +5,29 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "role")
-public class RoleEntity extends BaseEntity {
-	@Column
-	private String code;
+import com.finalproject.common.ERole;
 
-	@Column
-	private String name;
+@Entity
+@Table(name = "roles")
+public class RoleEntity extends BaseEntity {
+	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private ERole name;
 
 	@ManyToMany(mappedBy = "roles")
 	private List<UserEntity> users = new ArrayList<>();
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getName() {
+	public ERole getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(ERole name) {
 		this.name = name;
 	}
 
@@ -43,4 +38,16 @@ public class RoleEntity extends BaseEntity {
 	public void setUsers(List<UserEntity> users) {
 		this.users = users;
 	}
+
+	public RoleEntity(ERole name, List<UserEntity> users) {
+		super();
+		this.name = name;
+		this.users = users;
+	}
+
+	public RoleEntity() {
+		
+	}
+	
+	
 }

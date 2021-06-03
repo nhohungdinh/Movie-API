@@ -14,4 +14,14 @@ public abstract class BaseEntity {
 	public Long getId() {
 		return id;
 	}
+
+	public BaseEntity(Long id) {
+		super();
+		this.id = id;
+	}
+
+	public BaseEntity() {
+		
+	}
+	
 }

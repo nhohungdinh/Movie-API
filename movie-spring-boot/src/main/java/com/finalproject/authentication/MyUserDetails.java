@@ -1,45 +1,72 @@
 package com.finalproject.authentication;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.finalproject.entity.RoleEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finalproject.entity.UserEntity;
+
 
 public class MyUserDetails implements UserDetails {
 
-	private UserEntity userEntity;
+	private Long id;
 	
-	public MyUserDetails(UserEntity userEntity) {
-		super();
-		this.userEntity = userEntity;
+	private String username;
+	
+	private String email;
+	
+	@JsonIgnore
+	private String password;
+	
+	private Collection<? extends GrantedAuthority> authorities;
+	
+	public MyUserDetails(Long id, String username, String email, String password,
+			Collection<? extends GrantedAuthority> authorities) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.authorities = authorities;
+	}
+	
+	public static MyUserDetails build(UserEntity user) {
+		List<GrantedAuthority> authorities = user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
+				.collect(Collectors.toList());
+		
+		return new MyUserDetails(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities);
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<RoleEntity> roles = userEntity.getRoles();
-		List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-		for(RoleEntity role : roles) {
-			authorities.add(new SimpleGrantedAuthority(role.getName()));
-		}
+		// TODO Auto-generated method stub
 		return authorities;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return userEntity.getPassword();
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return userEntity.getUserName();
+		return username;
 	}
 
 	@Override
@@ -63,8 +90,22 @@ public class MyUserDetails implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return userEntity.isEnabled();
+		return true;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		MyUserDetails user = (MyUserDetails) o;
+		return Objects.equals(id, user.id);
+	}
+
+	
 
 
 

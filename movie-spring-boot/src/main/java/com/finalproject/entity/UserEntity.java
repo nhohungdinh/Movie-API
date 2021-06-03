@@ -9,33 +9,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"), @UniqueConstraint(columnNames = "email")})
 public class UserEntity extends BaseEntity {
-	@Column(name = "username", unique = true)
-	private String userName;
+	@Column
+	private String username;
 
 	@Column
 	private String password;
 
-	@Column(name = "fullname")
-	private String fullName;
-
 	@Column
-	private boolean enabled; 
+	private String email;
 
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<RoleEntity> roles = new ArrayList<>();
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 
 	public String getPassword() {
 		return password;
@@ -45,15 +35,6 @@ public class UserEntity extends BaseEntity {
 		this.password = password;
 	}
 
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-
 	public List<RoleEntity> getRoles() {
 		return roles;
 	}
@@ -62,11 +43,32 @@ public class UserEntity extends BaseEntity {
 		this.roles = roles;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setUsername(String username) {
+		this.username = username;
 	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public UserEntity(String username, String password, String email) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+	}
+
+	public UserEntity() {
+		
+	}
+
+	
 }
